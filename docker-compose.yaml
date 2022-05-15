@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:12.7
+    container_name: postgresql_database
+    networks:
+      - formula1_network
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=formula1_db
+    volumes:
+      - ../postgres-data:/var/lib/postgresql/data
+
+networks:
+  formula1_network:
+    driver: bridge
