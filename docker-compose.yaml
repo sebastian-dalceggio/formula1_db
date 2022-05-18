@@ -14,14 +14,18 @@ services:
       - POSTGRES_DB=formula1_db
     volumes:
       - ../postgres-data:/var/lib/postgresql/data
-  create_tables:
-    build: ./create_tables/
+  create_tables:    
+    build: ./src/create_tables/
     container_name: create_tables_sh
-    depends_on:
-      - postgres
     networks:
       - formula1_network
-
+  load_data:    
+    build: ./src/load_data/
+    container_name: load_data_py
+    networks:
+      - formula1_network
+    volumes:
+      - ./data:/home/app/data
 networks:
   formula1_network:
     driver: bridge
