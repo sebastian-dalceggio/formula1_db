@@ -1,0 +1,1 @@
+{"origin_db": "sqlite:///data/formula1.sqlite", "destination_db": "postgresql://admin:pass@postgres/formula1_db"}
