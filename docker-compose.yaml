@@ -7,11 +7,11 @@ services:
     networks:
       - formula1_network
     ports:
-      - 5432:5432
+      - ${DESTINATION_DB_PORT}:${DESTINATION_DB_PORT}
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=formula1_db
+      - POSTGRES_USER=${DESTINATION_DB_USER}
+      - POSTGRES_PASSWORD=${DESTINATION_DB_PASSWORD}
+      - POSTGRES_DB=${DESTINATION_DB_DATABASE}
     volumes:
       - ../postgres-data:/var/lib/postgresql/data
   create_tables:    
@@ -19,11 +19,19 @@ services:
     container_name: create_tables_sh
     networks:
       - formula1_network
+    environment:
+      - USER=${DESTINATION_DB_USER}
+      - PASSWORD=${DESTINATION_DB_PASSWORD}
+      - HOST=${DESTINATION_DB_HOST}
+      - DATABASE=${DESTINATION_DB_DATABASE}
   load_data:    
     build: ./src/load_data/
     container_name: load_data_py
     networks:
       - formula1_network
+    environment:
+      - destination_db=${DESTINATION_DB_TYPE}://${DESTINATION_DB_USER}:${DESTINATION_DB_PASSWORD}@${DESTINATION_DB_HOST}/${DESTINATION_DB_DATABASE}
+      - origin_db=${ORIGIN_DB_TYPE}://${ORIGIN_DB_USER}:${ORIGIN_DB_PASSWORD}@${ORIGIN_DB_HOST}/${ORIGIN_DB_DATABASE}
     volumes:
       - ./data:/home/app/data
 networks:

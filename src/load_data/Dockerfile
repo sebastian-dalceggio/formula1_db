@@ -9,4 +9,4 @@ WORKDIR /home/app
 RUN pip install -r requeriments.txt &&\
     chmod +x main.py
 
-CMD [ "python", "/home/app/main.py" ]
+CMD [ "bash", "-c", "python main.py --destination_db=${destination_db} --origin_db=${origin_db}" ]
