@@ -1,0 +1,2 @@
+{"database": "postgresql://admin:pass@postgres/formula1_db",
+"directory": "/home/app/queries_sql"}
