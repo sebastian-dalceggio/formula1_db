@@ -14,8 +14,9 @@ services:
       - POSTGRES_DB=${DESTINATION_DB_DATABASE}
     volumes:
       - ../postgres-data:/var/lib/postgresql/data
-  create_tables:    
-    build: ./src/create_tables/
+  create_tables:
+    build: ./create_tables/
+    image: create_tables:1.0
     container_name: create_tables_sh
     networks:
       - formula1_network
@@ -24,8 +25,9 @@ services:
       - PASSWORD=${DESTINATION_DB_PASSWORD}
       - HOST=${DESTINATION_DB_HOST}
       - DATABASE=${DESTINATION_DB_DATABASE}
-  load_data:    
-    build: ./src/load_data/
+  load_data:
+    build: ./load_data/
+    image: load_data:1.0
     container_name: load_data_py
     networks:
       - formula1_network
@@ -34,6 +36,29 @@ services:
       - origin_db=${ORIGIN_DB_TYPE}://${ORIGIN_DB_USER}:${ORIGIN_DB_PASSWORD}@${ORIGIN_DB_HOST}/${ORIGIN_DB_DATABASE}
     volumes:
       - ./data:/home/app/data
+      - ./classes:/home/app/classes
+  api:
+    build: ./api/
+    image: api:1.0
+    container_name: ${API_NAME}
+    networks:
+      - formula1_network
+    ports:
+      - ${API_PORT}:${API_PORT}
+    volumes:
+      - ./classes:/home/app/classes
+  dashboard:
+    build: ./dashboard/
+    image: dashboard:1.0
+    container_name: dashboard_py
+    networks:
+      - formula1_network
+    ports:
+      - 8501:8501
+    environment:
+      - api_url=http://${API_NAME}:${API_PORT}/get-table/
+    volumes:
+      - ./classes:/home/app/classes
 networks:
   formula1_network:
     driver: bridge
